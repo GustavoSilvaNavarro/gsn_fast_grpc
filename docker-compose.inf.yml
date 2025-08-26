@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: tree_db
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    ports:
+      - 5433:5432
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5

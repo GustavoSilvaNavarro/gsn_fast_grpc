@@ -1,0 +1,37 @@
+import type { Config } from '@jest/types';
+
+const config: Config.InitialOptions = {
+  roots: ['<rootDir>/tests'],
+  moduleDirectories: ['node_modules', '<rootDir>'],
+  modulePathIgnorePatterns: ['<rootDir>/tests/integration'],
+  verbose: true,
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testRegex: 'test.ts',
+  setupFiles: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['./tests/unit/setup.ts'],
+  moduleNameMapper: {
+    '^@config$': '<rootDir>/src/config',
+    '^@adapters$': '<rootDir>/src/adapters/index',
+    '^@adapters/(.*)$': '<rootDir>/src/adapters/$1',
+    '^@services$': '<rootDir>/src/services/index',
+    '^@services/(.*)$': '<rootDir>/src/services/$1',
+    '^@controllers/(.*)$': '<rootDir>/src/server/controllers/$1',
+    '^@controllers$': '<rootDir>/src/server/controllers/index',
+    '^@middlewares/(.*)$': '<rootDir>/src/server/middlewares/$1',
+    '^@middlewares$': '<rootDir>/src/server/middlewares/index',
+    '^@errors$': '<rootDir>/src/server/errors/index',
+    '^@errors/(.*)$': '<rootDir>/src/server/errors/$1',
+    '^@docs/(.*)$': '<rootDir>/src/docs/$1',
+    '^@routes$': '<rootDir>/src/server/routes/index',
+    '^@routes/(.*)$': '<rootDir>/src/server/routes/$1',
+    '^@server$': '<rootDir>/src/server/index',
+    '^@server/(.*)$': '<rootDir>/src/server/$1',
+    '^@tests/(.*)$': '<rootDir>/tests/$1',
+    '^@interfaces$': '<rootDir>/src/interfaces/index',
+    '^@interfaces/(.*)$': '<rootDir>/src/interfaces/$1',
+    '^@mocks/(.*)$': '<rootDir>/tests/__mocks__/$1',
+    '^@mocks$': '<rootDir>/tests/__mocks__/index',
+  },
+};
+export default config;

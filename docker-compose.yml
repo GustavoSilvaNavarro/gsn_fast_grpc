@@ -1,0 +1,20 @@
+services:
+  api:
+    image: tree_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./dev.env
+    ports:
+      - 8080:8080
+
+  integration_tests:
+    image: api_integration_tests
+    build:
+      context: .
+      dockerfile: ./tests/integration/integration.Dockerfile
+    env_file:
+      - ./testing.env
+    depends_on:
+      - api

@@ -1,0 +1,20 @@
+FROM node:lts-alpine AS installer
+
+RUN apk add --no-cache curl netcat-openbsd bash
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+RUN npm install -g ts-node
+
+COPY package.json package-lock.json .npmignore ./
+
+RUN npm ci
+
+RUN adduser -D default
+# Ensure all files (including node_modules) in /usr/src/app are owned by the default user.
+RUN chown -R default /usr/src/app
+# adjust ownership for global node modules
+RUN chown -R default /usr/local/lib/node_modules
+
+USER root
