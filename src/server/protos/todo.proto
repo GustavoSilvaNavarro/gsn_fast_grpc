@@ -4,7 +4,7 @@ package todo;
 
 // The Todo item message
 message Todo {
-  string id = 1;
+  int32 id = 1;
   string title = 2;
   bool completed = 3;
 }
@@ -15,17 +15,22 @@ message CreateTodoRequest {
 }
 
 message UpdateTodoRequest {
-  string id = 1;
+  int32 id = 1;
   string title = 2;
   bool completed = 3;
 }
 
 message TodoId {
-  string id = 1;
+  int32 id = 1;
 }
 
 message DeleteResponse {
-  bool success = 1;
+  string success = 1;
+}
+
+// A message to hold a list of todos
+message TodoList {
+  repeated Todo todos = 1; // repeated is key to allow a list of todos or empty
 }
 
 // The service definition with all CRUD-like methods.
@@ -37,18 +42,13 @@ service TodoService {
   rpc ListTodos (Empty) returns (TodoList);
 }
 
-// A simple message for no input or empty responses
-message Empty {}
-
-// A message to hold a list of todos
-message TodoList {
-  repeated Todo todos = 1;
-}
-
 // A dedicated service for server health checks
 service HealthService {
   rpc Healthz (Empty) returns (HealthCheckResponse);
 }
+
+// A simple message for no input or empty responses
+message Empty {}
 
 // Response for the health check endpoint
 message HealthCheckResponse {
