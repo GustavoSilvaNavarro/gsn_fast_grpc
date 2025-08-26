@@ -24,6 +24,8 @@
   },
   "author": "Gustavo Silva",
   "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.8.0",
     "axios": "^1.11.0",
     "bunyan": "^2.0.5",
     "signal-exit": "^4.1.0",
