@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package todo;
+
+import "google/protobuf/empty.proto"; // reuse Google's Empty message
+
+// The Todo item message
+message Todo {
+  int32 id = 1;
+  string title = 2;
+  bool completed = 3;
+}
+
+message CreateTodoRequest {
+  string title = 1;
+}
+
+message UpdateTodoRequest {
+  int32 id = 1;
+  string title = 2;
+  bool completed = 3;
+}
+
+message TodoId {
+  int32 id = 1;
+}
+
+message DeleteResponse {
+  string success = 1;
+}
+
+message TodoList {
+  repeated Todo todos = 1; // repeated is key to allow a list of todos or empty
+}
+
+// Service definition for todos
+service TodoService {
+  rpc CreateTodo (CreateTodoRequest) returns (Todo);
+  rpc ReadTodo (TodoId) returns (Todo);
+  rpc UpdateTodo (UpdateTodoRequest) returns (Todo);
+  rpc DeleteTodo (TodoId) returns (DeleteResponse);
+  rpc ListTodos (google.protobuf.Empty) returns (TodoList);
+  rpc ListTodosStream (google.protobuf.Empty) returns (stream Todo);
+}

@@ -20,12 +20,16 @@
     "check": "npx prettier --check src tests",
     "prepare": "husky install",
     "migration:up": "npx node-pg-migrate up",
-    "migration:down": "npx node-pg-migrate down"
+    "migration:down": "npx node-pg-migrate down",
+    "proto:gen": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/proto-gen --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js --proto_path=./src/protos --proto_path=./node_modules/google-proto-files ./src/protos/*.proto"
   },
   "author": "Gustavo Silva",
   "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.8.0",
     "axios": "^1.11.0",
     "bunyan": "^2.0.5",
+    "google-proto-files": "^5.0.1",
     "signal-exit": "^4.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
@@ -62,6 +66,7 @@
     "prettier": "^3.6.2",
     "supertest": "^7.0.0",
     "ts-jest": "^29.4.1",
+    "ts-proto": "^2.7.7",
     "typescript-transform-paths": "^3.5.5"
   }
 }

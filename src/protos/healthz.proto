@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package healthz;
+
+import "google/protobuf/empty.proto";
+
+message HealthCheckResponse {
+  string status = 1;
+}
+
+// Service definition for health
+service HealthService {
+  rpc Healthz (google.protobuf.Empty) returns (HealthCheckResponse);
+}
