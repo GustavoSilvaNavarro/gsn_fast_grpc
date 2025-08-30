@@ -18,6 +18,7 @@ import {
   type ServiceError,
   type UntypedServiceImplementation,
 } from '@grpc/grpc-js';
+import { Empty } from './google/protobuf/empty';
 
 export const protobufPackage = 'todo';
 
@@ -28,7 +29,6 @@ export interface Todo {
   completed: boolean;
 }
 
-/** Request and Response messages for individual operations */
 export interface CreateTodoRequest {
   title: string;
 }
@@ -47,18 +47,9 @@ export interface DeleteResponse {
   success: string;
 }
 
-/** A message to hold a list of todos */
 export interface TodoList {
   /** repeated is key to allow a list of todos or empty */
   todos: Todo[];
-}
-
-/** A simple message for no input or empty responses */
-export interface Empty {}
-
-/** Response for the health check endpoint */
-export interface HealthCheckResponse {
-  status: string;
 }
 
 function createBaseTodo(): Todo {
@@ -477,108 +468,7 @@ export const TodoList: MessageFns<TodoList> = {
   },
 };
 
-function createBaseEmpty(): Empty {
-  return {};
-}
-
-export const Empty: MessageFns<Empty> = {
-  encode(_: Empty, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Empty {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEmpty();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): Empty {
-    return {};
-  },
-
-  toJSON(_: Empty): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Empty>, I>>(base?: I): Empty {
-    return Empty.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<Empty>, I>>(_: I): Empty {
-    const message = createBaseEmpty();
-    return message;
-  },
-};
-
-function createBaseHealthCheckResponse(): HealthCheckResponse {
-  return { status: '' };
-}
-
-export const HealthCheckResponse: MessageFns<HealthCheckResponse> = {
-  encode(message: HealthCheckResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.status !== '') {
-      writer.uint32(10).string(message.status);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): HealthCheckResponse {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseHealthCheckResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.status = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): HealthCheckResponse {
-    return { status: isSet(object.status) ? globalThis.String(object.status) : '' };
-  },
-
-  toJSON(message: HealthCheckResponse): unknown {
-    const obj: any = {};
-    if (message.status !== '') {
-      obj.status = message.status;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<HealthCheckResponse>, I>>(base?: I): HealthCheckResponse {
-    return HealthCheckResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<HealthCheckResponse>, I>>(object: I): HealthCheckResponse {
-    const message = createBaseHealthCheckResponse();
-    message.status = object.status ?? '';
-    return message;
-  },
-};
-
-/** The service definition with all CRUD-like methods. */
+/** Service definition for todos */
 export type TodoServiceService = typeof TodoServiceService;
 export const TodoServiceService = {
   createTodo: {
@@ -711,51 +601,6 @@ export interface TodoServiceClient extends Client {
 export const TodoServiceClient = makeGenericClientConstructor(TodoServiceService, 'todo.TodoService') as unknown as {
   new (address: string, credentials: ChannelCredentials, options?: Partial<ClientOptions>): TodoServiceClient;
   service: typeof TodoServiceService;
-  serviceName: string;
-};
-
-/** A dedicated service for server health checks */
-export type HealthServiceService = typeof HealthServiceService;
-export const HealthServiceService = {
-  healthz: {
-    path: '/todo.HealthService/Healthz',
-    requestStream: false,
-    responseStream: false,
-    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
-    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
-    responseSerialize: (value: HealthCheckResponse): Buffer => Buffer.from(HealthCheckResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): HealthCheckResponse => HealthCheckResponse.decode(value),
-  },
-} as const;
-
-export interface HealthServiceServer extends UntypedServiceImplementation {
-  healthz: handleUnaryCall<Empty, HealthCheckResponse>;
-}
-
-export interface HealthServiceClient extends Client {
-  healthz(
-    request: Empty,
-    callback: (error: ServiceError | null, response: HealthCheckResponse) => void,
-  ): ClientUnaryCall;
-  healthz(
-    request: Empty,
-    metadata: Metadata,
-    callback: (error: ServiceError | null, response: HealthCheckResponse) => void,
-  ): ClientUnaryCall;
-  healthz(
-    request: Empty,
-    metadata: Metadata,
-    options: Partial<CallOptions>,
-    callback: (error: ServiceError | null, response: HealthCheckResponse) => void,
-  ): ClientUnaryCall;
-}
-
-export const HealthServiceClient = makeGenericClientConstructor(
-  HealthServiceService,
-  'todo.HealthService',
-) as unknown as {
-  new (address: string, credentials: ChannelCredentials, options?: Partial<ClientOptions>): HealthServiceClient;
-  service: typeof HealthServiceService;
   serviceName: string;
 };
 

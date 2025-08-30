@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package todo;
 
+import "google/protobuf/empty.proto"; // reuse Google's Empty message
+
 // The Todo item message
 message Todo {
   int32 id = 1;
@@ -9,7 +11,6 @@ message Todo {
   bool completed = 3;
 }
 
-// Request and Response messages for individual operations
 message CreateTodoRequest {
   string title = 1;
 }
@@ -28,29 +29,15 @@ message DeleteResponse {
   string success = 1;
 }
 
-// A message to hold a list of todos
 message TodoList {
   repeated Todo todos = 1; // repeated is key to allow a list of todos or empty
 }
 
-// The service definition with all CRUD-like methods.
+// Service definition for todos
 service TodoService {
   rpc CreateTodo (CreateTodoRequest) returns (Todo);
   rpc ReadTodo (TodoId) returns (Todo);
   rpc UpdateTodo (UpdateTodoRequest) returns (Todo);
   rpc DeleteTodo (TodoId) returns (DeleteResponse);
-  rpc ListTodos (Empty) returns (TodoList);
-}
-
-// A dedicated service for server health checks
-service HealthService {
-  rpc Healthz (Empty) returns (HealthCheckResponse);
-}
-
-// A simple message for no input or empty responses
-message Empty {}
-
-// Response for the health check endpoint
-message HealthCheckResponse {
-  string status = 1;
+  rpc ListTodos (google.protobuf.Empty) returns (TodoList);
 }
