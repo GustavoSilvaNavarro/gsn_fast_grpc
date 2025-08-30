@@ -40,4 +40,5 @@ service TodoService {
   rpc UpdateTodo (UpdateTodoRequest) returns (Todo);
   rpc DeleteTodo (TodoId) returns (DeleteResponse);
   rpc ListTodos (google.protobuf.Empty) returns (TodoList);
+  rpc ListTodosStream (google.protobuf.Empty) returns (stream Todo);
 }

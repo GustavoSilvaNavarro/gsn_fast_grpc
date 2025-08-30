@@ -1,4 +1,4 @@
-import { sendUnaryData, ServerUnaryCall } from '@grpc/grpc-js';
+import { sendUnaryData, ServerUnaryCall, ServerWritableStream } from '@grpc/grpc-js';
 import { Empty } from '@proto-gen/google/protobuf/empty';
 import {
   CreateTodoRequest,
@@ -44,5 +44,10 @@ export const todoServerImplementation: TodoServiceServer = {
 
   listTodos: (_call: ServerUnaryCall<Empty, TodoList>, callback: sendUnaryData<TodoList>) => {
     callback(null, { todos });
+  },
+
+  listTodosStream: (call: ServerWritableStream<Empty, Todo>) => {
+    todos.forEach((todo) => call.write(todo));
+    call.end();
   },
 };

@@ -11,7 +11,9 @@ import {
   type ChannelCredentials,
   Client,
   type ClientOptions,
+  type ClientReadableStream,
   type ClientUnaryCall,
+  type handleServerStreamingCall,
   type handleUnaryCall,
   makeGenericClientConstructor,
   type Metadata,
@@ -516,6 +518,15 @@ export const TodoServiceService = {
     responseSerialize: (value: TodoList): Buffer => Buffer.from(TodoList.encode(value).finish()),
     responseDeserialize: (value: Buffer): TodoList => TodoList.decode(value),
   },
+  listTodosStream: {
+    path: '/todo.TodoService/ListTodosStream',
+    requestStream: false,
+    responseStream: true,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: Todo): Buffer => Buffer.from(Todo.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Todo => Todo.decode(value),
+  },
 } as const;
 
 export interface TodoServiceServer extends UntypedServiceImplementation {
@@ -524,6 +535,7 @@ export interface TodoServiceServer extends UntypedServiceImplementation {
   updateTodo: handleUnaryCall<UpdateTodoRequest, Todo>;
   deleteTodo: handleUnaryCall<TodoId, DeleteResponse>;
   listTodos: handleUnaryCall<Empty, TodoList>;
+  listTodosStream: handleServerStreamingCall<Empty, Todo>;
 }
 
 export interface TodoServiceClient extends Client {
@@ -596,6 +608,8 @@ export interface TodoServiceClient extends Client {
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: TodoList) => void,
   ): ClientUnaryCall;
+  listTodosStream(request: Empty, options?: Partial<CallOptions>): ClientReadableStream<Todo>;
+  listTodosStream(request: Empty, metadata?: Metadata, options?: Partial<CallOptions>): ClientReadableStream<Todo>;
 }
 
 export const TodoServiceClient = makeGenericClientConstructor(TodoServiceService, 'todo.TodoService') as unknown as {
