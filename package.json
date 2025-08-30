@@ -20,7 +20,8 @@
     "check": "npx prettier --check src tests",
     "prepare": "husky install",
     "migration:up": "npx node-pg-migrate up",
-    "migration:down": "npx node-pg-migrate down"
+    "migration:down": "npx node-pg-migrate down",
+    "proto:gen": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/proto-gen --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js --proto_path=./src/protos ./src/protos/*.proto"
   },
   "author": "Gustavo Silva",
   "dependencies": {
@@ -64,6 +65,7 @@
     "prettier": "^3.6.2",
     "supertest": "^7.0.0",
     "ts-jest": "^29.4.1",
+    "ts-proto": "^2.7.7",
     "typescript-transform-paths": "^3.5.5"
   }
 }
