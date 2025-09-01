@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_DB: tree_db
+      POSTGRES_DB: todo_db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
     ports:

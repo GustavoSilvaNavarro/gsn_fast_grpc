@@ -21,6 +21,7 @@ import {
   type UntypedServiceImplementation,
 } from '@grpc/grpc-js';
 import { Empty } from './google/protobuf/empty';
+import { Timestamp } from './google/protobuf/timestamp';
 
 export const protobufPackage = 'todo';
 
@@ -29,6 +30,8 @@ export interface Todo {
   id: number;
   title: string;
   completed: boolean;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
 }
 
 export interface CreateTodoRequest {
@@ -55,7 +58,7 @@ export interface TodoList {
 }
 
 function createBaseTodo(): Todo {
-  return { id: 0, title: '', completed: false };
+  return { id: 0, title: '', completed: false, createdAt: undefined, updatedAt: undefined };
 }
 
 export const Todo: MessageFns<Todo> = {
@@ -68,6 +71,12 @@ export const Todo: MessageFns<Todo> = {
     }
     if (message.completed !== false) {
       writer.uint32(24).bool(message.completed);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(34).fork()).join();
+    }
+    if (message.updatedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.updatedAt), writer.uint32(42).fork()).join();
     }
     return writer;
   },
@@ -103,6 +112,22 @@ export const Todo: MessageFns<Todo> = {
           message.completed = reader.bool();
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.updatedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -117,6 +142,8 @@ export const Todo: MessageFns<Todo> = {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       title: isSet(object.title) ? globalThis.String(object.title) : '',
       completed: isSet(object.completed) ? globalThis.Boolean(object.completed) : false,
+      createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+      updatedAt: isSet(object.updatedAt) ? fromJsonTimestamp(object.updatedAt) : undefined,
     };
   },
 
@@ -131,6 +158,12 @@ export const Todo: MessageFns<Todo> = {
     if (message.completed !== false) {
       obj.completed = message.completed;
     }
+    if (message.createdAt !== undefined) {
+      obj.createdAt = message.createdAt.toISOString();
+    }
+    if (message.updatedAt !== undefined) {
+      obj.updatedAt = message.updatedAt.toISOString();
+    }
     return obj;
   },
 
@@ -142,6 +175,8 @@ export const Todo: MessageFns<Todo> = {
     message.id = object.id ?? 0;
     message.title = object.title ?? '';
     message.completed = object.completed ?? false;
+    message.createdAt = object.createdAt ?? undefined;
+    message.updatedAt = object.updatedAt ?? undefined;
     return message;
   },
 };
@@ -634,6 +669,28 @@ type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = Math.trunc(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = (t.seconds || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof globalThis.Date) {
+    return o;
+  } else if (typeof o === 'string') {
+    return new globalThis.Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;
