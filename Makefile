@@ -4,6 +4,11 @@ SERVICE_NAME = tree_api
 CONTAINER_NAME = $(SERVICE_NAME)
 DOCKER_COMPOSE_TAG = $(SERVICE_NAME)_1
 
+# Prisma Commands
+prisma-init:
+	@echo "🔥 Initiating prisma..."
+	npx prisma init
+
 # DB Commands
 create-migration:
 	npx node-pg-migrate create '$(m)'

@@ -1,7 +1,9 @@
 {
   "cSpell.words": [
     "bufbuild",
+    "healthcheck",
     "Healthz",
+    "isready",
     "oneofs",
     "protoc",
     "protos"
