@@ -19,8 +19,8 @@
     "format": "npx prettier --write src tests",
     "check": "npx prettier --check src tests",
     "prepare": "husky install",
-    "migration:up": "npx node-pg-migrate up",
-    "migration:down": "npx node-pg-migrate down",
+    "migration:up": "npx prisma migrate dev",
+    "migration:down": "npx prisma migrate reset",
     "proto:gen": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/proto-gen --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js --proto_path=./src/protos --proto_path=./node_modules/google-proto-files ./src/protos/*.proto"
   },
   "author": "Gustavo Silva",

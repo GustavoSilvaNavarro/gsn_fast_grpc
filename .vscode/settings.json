@@ -1,11 +1,13 @@
 {
   "cSpell.words": [
+    "autoincrement",
     "bufbuild",
     "healthcheck",
     "Healthz",
     "isready",
     "oneofs",
     "protoc",
-    "protos"
+    "protos",
+    "qodo"
   ]
 }
