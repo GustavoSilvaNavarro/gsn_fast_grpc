@@ -4,6 +4,11 @@ SERVICE_NAME = gsn_fast_grpc
 CONTAINER_NAME = $(SERVICE_NAME)
 DOCKER_COMPOSE_TAG = $(SERVICE_NAME)_1
 
+# Proto Generation
+generate-protos:
+	@echo "🚀 Generating proto files to interact with business logic..."
+	npm run proto:gen
+
 # Prisma Commands
 prisma-init:
 	@echo "🔥 Initiating prisma..."
