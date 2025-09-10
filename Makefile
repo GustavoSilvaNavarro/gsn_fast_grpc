@@ -1,8 +1,30 @@
 #!make
 PORT = 8080
-SERVICE_NAME = tree_api
+SERVICE_NAME = gsn_fast_grpc
 CONTAINER_NAME = $(SERVICE_NAME)
 DOCKER_COMPOSE_TAG = $(SERVICE_NAME)_1
+
+# Proto Generation
+generate-protos:
+	@echo "🚀 Generating proto files to interact with business logic..."
+	npm run proto:gen
+
+# Prisma Commands
+prisma-init:
+	@echo "🔥 Initiating prisma..."
+	npx prisma init
+
+prisma-apply-migration:
+	npm run migration:up
+
+prisma-migration-down:
+	npm run migration:down
+
+prisma-create-migration:
+	npx prisma migrate dev --name $(name)
+
+prisma-manual-migration:
+	npx prisma migrate dev --create-only --name $(name)
 
 # DB Commands
 create-migration:

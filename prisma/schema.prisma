@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NOTE: Define Model here
+// ? Todo Model
+model TodoModel {
+  id        Int      @id @default(autoincrement())
+  title     String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") // Mapped to snake_case
+  updatedAt DateTime @updatedAt @map("updated_at") // Mapped to snake_case
+
+  @@map("todo") // This is the key: maps the model 'TodoModel' to the table 'todo'
+}
