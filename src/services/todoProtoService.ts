@@ -7,6 +7,8 @@ import {
   type ServiceError,
   status,
 } from '@grpc/grpc-js';
+import { type CreateTodoSchema, createTodoSchema } from '@interfaces/dtos';
+import { validateSchema } from '@middlewares/schemaValidation';
 import { Empty } from '@proto-gen/google/protobuf/empty';
 import {
   CreateTodoRequest,
@@ -20,9 +22,14 @@ import {
 
 export const todoServerImplementation: TodoServiceServer = {
   createTodo: async (call: ServerUnaryCall<CreateTodoRequest, Todo>, callback: sendUnaryData<Todo>) => {
-    const { title } = call.request;
+    const data = await validateSchema<CreateTodoSchema>(createTodoSchema, call.request);
+    if (!('title' in data)) {
+      console.log(data);
+      callback({ ...data, code: status.INVALID_ARGUMENT, metadata: call.metadata }, null);
+      return;
+    }
 
-    const newTodo = await prisma.todoModel.create({ data: { title } });
+    const newTodo = await prisma.todoModel.create({ data });
     callback(null, newTodo);
   },
 
